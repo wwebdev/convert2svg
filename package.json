@@ -1,0 +1,17 @@
+{
+  "name": "convert2svg",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "9.1.5",
+    "react": "16.12.0",
+    "react-dom": "16.12.0",
+    "react-dropzone": "^10.2.1",
+    "superagent": "^5.1.2"
+  }
+}
