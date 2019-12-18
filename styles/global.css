@@ -1,0 +1,34 @@
+*, ::before, ::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 18px;
+    line-height: 27px;
+}
+
+body {
+    background: #fff;
+    margin: 0;
+    color:#5B6F82;
+    font-size: 1rem;
+
+    font-family: "Lato", sans-serif;
+    hyphens: manual;
+    letter-spacing: -.02rem;
+    line-height: 1.2;
+}
+
+hr {
+    color: #d5d8dc;
+    margin-bottom: 50px;
+}
+
+a {
+    color:#5B6F82;
+    text-decoration: underline;
+}
+
+a:hover {
+    text-decoration: none;
+}
