@@ -1,9 +1,15 @@
 import React, { useState } from 'react'
 import Head from 'next/head'
-import { DotLoader } from 'react-spinners'
 import { SvgIcon } from '@material-ui/core' // TODO use that
-import { Dropzone } from '../components'
+
 import "../styles/global.css"
+import {
+  ConvertResult,
+  Dropzone,
+  Header,
+} from '../components'
+import { convertImage, getImageSrc } from '../helper/image'
+import * as S from '../styles/landing'
 
 // https://github.com/jankovicsandras/imagetracerjs/blob/master/options.md
 
@@ -12,42 +18,45 @@ const Home = () => {
   const [svgPreview, setSvgPreview] = useState(undefined)
   const [isLoading, setIsLoading] = useState(false)
 
-  const setFileAndConvert = file => {
+  const setFileAndConvert = async file => {
     setIsLoading(true)
-    setImageSrc(file)
-    const objectURL = window.URL.createObjectURL(file)
+    setImageSrc(undefined)
+    setSvgPreview(undefined)
 
-    ImageTracer.imageToSVG(
-      objectURL,
-      function(svgstr){
-        setIsLoading(false)
-        setSvgPreview(svgstr)
-      },
-      'detailed', // TODO check image size and set default option by that
-    );
+    const imageFile = await getImageSrc(file)
+    console.log('file', file)
+    setImageSrc(imageFile)
+
+    const svgString = await convertImage(file)
+    console.log('svgString')
+    setSvgPreview(svgString)
+    setIsLoading(false)
   }
 
+  const hideUpload = isLoading || svgPreview || imageSrc
+  console.log(hideUpload, isLoading, svgPreview, imageSrc)
+
   return (
-    <div>
+    <S.Container>
       <Head>
-        <title>Image2Svg</title>
+        <title>Convert2Svg</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Dropzone setImageSrc={setFileAndConvert} />
+      <Header />
 
-      { isLoading && <DotLoader
-          sizeUnit={"px"}
-          size={150}
-          color={'#123abc'}
-      /> }
+      <S.CenterContent>
+        { !hideUpload && <Dropzone setImageSrc={setFileAndConvert} /> }
 
-      { // TODO check better option than dangerouslySetInnerHTML
-        svgPreview && <div dangerouslySetInnerHTML={{ __html: svgPreview }}></div>
-      }
+        { svgPreview && <ConvertResult
+          imageSrc={imageSrc}
+          isLoading={isLoading}
+          svgPreview={svgPreview}
+        /> }
+      </S.CenterContent>
 
       <script src="/imagetracer_v1.2.5.js"></script>
-    </div>
+    </S.Container>
   )
 }
 
