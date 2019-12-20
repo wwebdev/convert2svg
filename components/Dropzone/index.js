@@ -1,25 +1,39 @@
 import React, { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { Backup } from '@material-ui/icons';
-import { Icon } from '@material-ui/core';
+import { Icon } from '@material-ui/core'
+import SVG from 'react-inlinesvg'
 import * as S from './styled'
 
+// https://react-dropzone.netlify.com/
 function Dropzone(props) {
     const onDrop = useCallback(acceptedFiles => {
         props.setImageSrc(acceptedFiles[0])
     }, [])
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({
+        onDrop,
+        accept: 'image/*'
+    })
 
     return (
-        <S.Container {...getRootProps()}>
+        <S.Container
+            {...getRootProps()}
+            isDragActive={isDragActive}
+        >
             <input {...getInputProps()} />
             {
-                isDragActive
-                ? <p>Drop the files here ...</p>
-                : <div>
-                    <Backup />
-                    <p>Drag 'n' drop some files here, or click to select files</p>
-                </div>
+                <S.Content>
+                    <SVG
+                        title="Image upload"
+                        src="/images.svg"
+                    />
+                    { isDragActive
+                        ? <p>Drop the files here ...</p>
+                        : <div>
+                            <p>Drag 'n' drop your image file here, or click to select file</p>
+                            <S.UploadButton variant="contained">Upload Image</S.UploadButton>
+                        </div>
+                    }
+                </S.Content>
             }
         </S.Container>
     )

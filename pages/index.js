@@ -34,7 +34,6 @@ const Home = () => {
   }
 
   const hideUpload = isLoading || svgPreview || imageSrc
-  console.log(hideUpload, isLoading, svgPreview, imageSrc)
 
   return (
     <S.Container>
