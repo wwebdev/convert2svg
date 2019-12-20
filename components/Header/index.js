@@ -3,7 +3,7 @@ import * as S from './styled'
 
 const Header = props => (
     <S.Container>
-        Header
+        Convert2Svg
     </S.Container>
 )
 

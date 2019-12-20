@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import Head from 'next/head'
-import { SvgIcon } from '@material-ui/core' // TODO use that
-
+import { SvgIcon } from '@material-ui/core'
 import "../styles/global.css"
 import {
   ConvertResult,
@@ -9,6 +8,7 @@ import {
   Header,
 } from '../components'
 import { convertImage, getImageSrc } from '../helper/image'
+import presets from '../helper/presets'
 import * as S from '../styles/landing'
 
 // https://github.com/jankovicsandras/imagetracerjs/blob/master/options.md
@@ -27,7 +27,13 @@ const Home = () => {
     console.log('file', file)
     setImageSrc(imageFile)
 
-    const svgString = await convertImage(file)
+    const svgString = await convertImage({
+      file,
+      options: {
+        ...presets.detailed,
+        viewbox:true,
+      }
+    })
     console.log('svgString')
     setSvgPreview(svgString)
     setIsLoading(false)
@@ -47,7 +53,7 @@ const Home = () => {
       <S.CenterContent>
         { !hideUpload && <Dropzone setImageSrc={setFileAndConvert} /> }
 
-        { svgPreview && <ConvertResult
+        { hideUpload && <ConvertResult
           imageSrc={imageSrc}
           isLoading={isLoading}
           svgPreview={svgPreview}

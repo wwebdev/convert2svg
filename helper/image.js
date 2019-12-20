@@ -1,10 +1,10 @@
-export const convertImage = file => {
+export const convertImage = ({ file, options }) => {
     return new Promise((resolve, reject) => {
         const objectURL = window.URL.createObjectURL(file)
         ImageTracer.imageToSVG(
             objectURL,
             svgstr => resolve(svgstr),
-            'detailed', // TODO check image size and set default option by that
+            options,
         )
     })
 }

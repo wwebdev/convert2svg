@@ -1,5 +1,4 @@
 import React from 'react'
-import Paper from '@material-ui/core/Paper'
 import { DotLoader } from 'react-spinners'
 
 import * as S from './styled'
@@ -11,12 +10,12 @@ const ConvertResult = ({
 }) => (
     <S.Container>
         { imageSrc &&
-            <Paper>
+            <S.Content>
                 <img src={imageSrc} alt="your image preview" />
-            </Paper>
+            </S.Content>
         }
 
-        <Paper>
+        <S.Content>
             { isLoading && <DotLoader
                 sizeUnit={"px"}
                 size={150}
@@ -26,7 +25,7 @@ const ConvertResult = ({
             { // TODO check better option than dangerouslySetInnerHTML
                 svgPreview && <div dangerouslySetInnerHTML={{ __html: svgPreview }}></div>
             }
-        </Paper>
+        </S.Content>
     </S.Container>
 )
 
