@@ -1,4 +1,7 @@
-export default {
+// https://github.com/jankovicsandras/imagetracerjs/blob/master/options.md
+
+export const defaultPreset = 'detailed'
+export const presets = {
     'default': {
         // Tracing
         corsenabled : false,

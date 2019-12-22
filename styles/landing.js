@@ -9,8 +9,14 @@ export const Container = styled.main`
 `
 
 export const CenterContent = styled.div`
-    flex: 1;
     display: flex;
+    flex: 1;
     align-items: center;
     justify-content: center;
+`
+
+export const SidebarContent = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
 `

@@ -1,6 +1,7 @@
 export const convertImage = ({ file, options }) => {
     return new Promise((resolve, reject) => {
         const objectURL = window.URL.createObjectURL(file)
+        // https://github.com/jankovicsandras/imagetracerjs
         ImageTracer.imageToSVG(
             objectURL,
             svgstr => resolve(svgstr),

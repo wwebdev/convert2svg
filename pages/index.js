@@ -3,20 +3,24 @@ import Head from 'next/head'
 import { SvgIcon } from '@material-ui/core'
 import "../styles/global.css"
 import {
-  ConvertResult,
   Dropzone,
   Header,
+  Loader,
+  Result,
+  Sidebar,
 } from '../components'
 import { convertImage, getImageSrc } from '../helper/image'
-import presets from '../helper/presets'
+import { presets, defaultPreset } from '../helper/presets'
 import * as S from '../styles/landing'
-
-// https://github.com/jankovicsandras/imagetracerjs/blob/master/options.md
 
 const Home = () => {
   const [imageSrc, setImageSrc] = useState(undefined)
   const [svgPreview, setSvgPreview] = useState(undefined)
   const [isLoading, setIsLoading] = useState(false)
+  const [options, setOptions] = useState({
+    ...presets[defaultPreset],
+    viewbox: true,
+  })
 
   const setFileAndConvert = async file => {
     setIsLoading(true)
@@ -24,22 +28,15 @@ const Home = () => {
     setSvgPreview(undefined)
 
     const imageFile = await getImageSrc(file)
-    console.log('file', file)
     setImageSrc(imageFile)
 
-    const svgString = await convertImage({
-      file,
-      options: {
-        ...presets.detailed,
-        viewbox:true,
-      }
-    })
-    console.log('svgString')
+    const svgString = await convertImage({ file, options })
     setSvgPreview(svgString)
     setIsLoading(false)
   }
 
   const hideUpload = isLoading || svgPreview || imageSrc
+  const showResult = !isLoading && svgPreview
 
   return (
     <S.Container>
@@ -50,15 +47,23 @@ const Home = () => {
 
       <Header />
 
-      <S.CenterContent>
-        { !hideUpload && <Dropzone setImageSrc={setFileAndConvert} /> }
+      { !showResult &&
+        <S.CenterContent>
+          { !hideUpload && <Dropzone setImageSrc={setFileAndConvert} /> }
+          { isLoading && <Loader /> }
+        </S.CenterContent>
+      }
 
-        { hideUpload && <ConvertResult
-          imageSrc={imageSrc}
-          isLoading={isLoading}
-          svgPreview={svgPreview}
-        /> }
-      </S.CenterContent>
+      { showResult &&
+        <S.SidebarContent>
+          <Sidebar
+            imageSrc={imageSrc}
+            options={options}
+            setOptions={setOptions}
+          />
+          <Result svgPreview={svgPreview} />
+        </S.SidebarContent>
+      }
 
       <script src="/imagetracer_v1.2.5.js"></script>
     </S.Container>
