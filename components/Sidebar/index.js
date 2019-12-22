@@ -3,6 +3,14 @@ import * as S from './styled'
 import Select from 'react-select'
 import { presets, defaultPreset } from '../../helper/presets'
 
+const options = Object.keys(presets)
+    .map((key, index) => {
+        return {
+            value: key,
+            label: key, // presets[key],
+        }
+    })
+
 const Sidebar = ({
     imageSrc,
     setOptions,
@@ -11,8 +19,6 @@ const Sidebar = ({
     const changePreset = e => {
         // setOptions
     }
-
-    // TODO map presets to dropdown options [{ value: 'default', label: 'Default' },]
 
     return (
         <S.Container>
