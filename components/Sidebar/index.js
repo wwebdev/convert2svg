@@ -14,6 +14,7 @@ const options = Object.keys(presets)
 const Sidebar = ({
     imageSrc,
     setOptions,
+    updateSvg,
 }) => {
     const [preset, setPreset] = useState(defaultPreset)
     const changePreset = e => {
@@ -31,7 +32,7 @@ const Sidebar = ({
                 options={options}
             />
 
-            <S.Button>
+            <S.Button onClick={updateSvg}>
                 Update
             </S.Button>
         </S.Container>

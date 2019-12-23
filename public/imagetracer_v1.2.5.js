@@ -50,14 +50,14 @@ function ImageTracer(){
 	
 	// Loading an image from a URL, tracing when loaded,
 	// then executing callback with the scaled svg string as argument
-	this.imageToSVG = function( url, callback, options ){
+	this.imageToSVG = function( url, callback, options, progressFunction ){
 		options = _this.checkoptions(options);
 		// loading image, tracing and callback
 		_this.loadImage(
 			url,
 			function(canvas){
 				callback(
-					_this.imagedataToSVG( _this.getImgdata(canvas), options )
+					_this.imagedataToSVG( _this.getImgdata(canvas), options, progressFunction )
 				);
 			},
 			options
@@ -65,10 +65,10 @@ function ImageTracer(){
 	},// End of imageToSVG()
 	
 	// Tracing imagedata, then returning the scaled svg string
-	this.imagedataToSVG = function( imgd, options ){
+	this.imagedataToSVG = function( imgd, options, progressFunction ){
 		options = _this.checkoptions(options);
 		// tracing imagedata
-		var td = _this.imagedataToTracedata( imgd, options );
+		var td = _this.imagedataToTracedata( imgd, options, progressFunction );
 		// returning SVG string
 		return _this.getsvgstring(td, options);
 	},// End of imagedataToSVG()
@@ -90,7 +90,7 @@ function ImageTracer(){
 	},// End of imageToTracedata()
 	
 	// Tracing imagedata, then returning tracedata (layers with paths, palette, image size)
-	this.imagedataToTracedata = function( imgd, options ){
+	this.imagedataToTracedata = function( imgd, options, progressFunction ){
 		options = _this.checkoptions(options);
 		
 		// 1. Color quantization
@@ -108,7 +108,9 @@ function ImageTracer(){
 			
 			// Loop to trace each color layer
 			for(var colornum=0; colornum<ii.palette.length; colornum++){
-				
+				// progressbar function
+				if (progressFunction) { progressFunction(colornum, ii.palette.length) }
+
 				// layeringstep -> pathscan -> internodes -> batchtracepaths
 				var tracedlayer =
 					_this.batchtracepaths(

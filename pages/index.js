@@ -15,17 +15,17 @@ import * as S from '../styles/landing'
 
 const Home = () => {
   const [imageSrc, setImageSrc] = useState(undefined)
+  const [imageFile, setImageFile] = useState(undefined)
   const [svgPreview, setSvgPreview] = useState(undefined)
   const [isLoading, setIsLoading] = useState(false)
-  const [options, setOptions] = useState({
-    ...presets[defaultPreset],
-    viewbox: true,
-  })
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [options, setOptions] = useState(presets[defaultPreset])
 
   const setFileAndConvert = async file => {
     setIsLoading(true)
     setImageSrc(undefined)
     setSvgPreview(undefined)
+    setImageFile(file)
 
     const imageFile = await getImageSrc(file)
     setImageSrc(imageFile)
@@ -35,20 +35,17 @@ const Home = () => {
     setIsLoading(false)
   }
 
-  const reConvert = async () => {
-    setIsLoading(true)
+  const updateSvg = async () => {
+    setIsUpdating(true)
     setSvgPreview(undefined)
 
-    const imageFile = await getImageSrc(file)
-    setImageSrc(imageFile)
-
-    const svgString = await convertImage({ file, options })
+    const svgString = await convertImage({ file: imageFile, options })
     setSvgPreview(svgString)
-    setIsLoading(false)
+    setIsUpdating(false)
   }
 
   const hideUpload = isLoading || svgPreview || imageSrc
-  const showResult = !isLoading && svgPreview
+  const showResult = !!svgPreview || isUpdating
 
   return (
     <S.Container>
@@ -68,12 +65,16 @@ const Home = () => {
 
       { showResult &&
         <S.SidebarContent>
-          <Sidebar
+          { imageSrc && <Sidebar
             imageSrc={imageSrc}
             options={options}
             setOptions={setOptions}
-          />
-          <Result svgPreview={svgPreview} />
+            updateSvg={updateSvg}
+          /> }
+          <S.CenterContent>
+            { svgPreview && <Result svgPreview={svgPreview} /> }
+            { isUpdating && <Loader /> }
+          </S.CenterContent>
         </S.SidebarContent>
       }
 

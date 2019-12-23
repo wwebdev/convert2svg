@@ -2,9 +2,7 @@ import styled from 'styled-components'
 import Paper from '@material-ui/core/Paper'
 
 export const Container = styled.div`
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+    margin: 50px;
 `
 export const Content = styled(Paper)`
     padding: 0;

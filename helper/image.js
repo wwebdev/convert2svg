@@ -1,11 +1,16 @@
 export const convertImage = ({ file, options }) => {
     return new Promise((resolve, reject) => {
         const objectURL = window.URL.createObjectURL(file)
+        // modified version of (added progress bar functionality)
         // https://github.com/jankovicsandras/imagetracerjs
         ImageTracer.imageToSVG(
             objectURL,
             svgstr => resolve(svgstr),
-            options,
+            {
+                ...options,
+                viewbox: true,
+            },
+            (progress, all) => console.log(progress, all) // TODO progress bar
         )
     })
 }
