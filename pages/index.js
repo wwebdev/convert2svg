@@ -35,6 +35,18 @@ const Home = () => {
     setIsLoading(false)
   }
 
+  const reConvert = async () => {
+    setIsLoading(true)
+    setSvgPreview(undefined)
+
+    const imageFile = await getImageSrc(file)
+    setImageSrc(imageFile)
+
+    const svgString = await convertImage({ file, options })
+    setSvgPreview(svgString)
+    setIsLoading(false)
+  }
+
   const hideUpload = isLoading || svgPreview || imageSrc
   const showResult = !isLoading && svgPreview
 

@@ -7,7 +7,7 @@ const options = Object.keys(presets)
     .map((key, index) => {
         return {
             value: key,
-            label: key, // presets[key],
+            label: presets[key].label,
         }
     })
 
@@ -15,9 +15,10 @@ const Sidebar = ({
     imageSrc,
     setOptions,
 }) => {
-    const [preset, setPreset] = useState(null)
+    const [preset, setPreset] = useState(defaultPreset)
     const changePreset = e => {
-        // setOptions
+        setPreset(e)
+        setOptions(presets[e.value])
     }
 
     return (
