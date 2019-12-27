@@ -1,5 +1,3 @@
-// https://github.com/jankovicsandras/imagetracerjs/blob/master/options.md
-
 // todo only map preset to label here
 export const presets = {
     'default': {

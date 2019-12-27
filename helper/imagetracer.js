@@ -1,7 +1,12 @@
 /*
+	based on:
+	https://github.com/jankovicsandras/imagetracerjs/blob/master/options.md
 	imagetracer.js version 1.2.5
 	Simple raster image tracer and vectorizer written in JavaScript.
 	andras@jankovics.net
+
+	modifications by
+	info@vincentwill.com
 */
 
 /*
@@ -41,142 +46,146 @@ const ImageTracer = {
 	//  User friendly functions
 	//
 	////////////////////////////////////////////////////////////
-	
+
 	// Loading an image from a URL, tracing when loaded,
 	// then executing callback with the scaled svg string as argument
-	imageToSVG: function( url, callback, options, progressFunction ){
-		options = ImageTracer.checkoptions(options);
-		// loading image, tracing and callback
-		ImageTracer.loadImage(
-			url,
-			function(canvas){
-				callback(
-					ImageTracer.imagedataToSVG( ImageTracer.getImgdata(canvas), options, progressFunction )
-				);
-			},
-			options
-		);
+	imageToSVG: (url, options, progressFunction) => {
+		return new Promise(async (resolve, reject) => {
+			options = ImageTracer.checkoptions(options);
+			// loading image, tracing and callback
+			const canvas = await ImageTracer.loadImage(
+				url,
+				options
+			);
+			const result = ImageTracer.imagedataToSVG( ImageTracer.getImgdata(canvas), options, progressFunction )
+			resolve(result)
+		})
 	},// End of imageToSVG()
-	
+
 	// Tracing imagedata, then returning the scaled svg string
-	imagedataToSVG: function( imgd, options, progressFunction ){
+	imagedataToSVG: async ( imgd, options, progressFunction ) => {
 		options = ImageTracer.checkoptions(options);
 		// tracing imagedata
-		var td = ImageTracer.imagedataToTracedata( imgd, options, progressFunction );
+		var td = await ImageTracer.imagedataToTracedata( imgd, options, progressFunction );
 		// returning SVG string
 		return ImageTracer.getsvgstring(td, options);
 	},// End of imagedataToSVG()
-	
+
 	// Loading an image from a URL, tracing when loaded,
 	// then executing callback with tracedata as argument
-	imageToTracedata: function( url, callback, options ){
+	imageToTracedata: async ( url, callback, options ) => {
 		options = ImageTracer.checkoptions(options);
 		// loading image, tracing and callback
-		ImageTracer.loadImage(
-				url,
-				function(canvas){
-					callback(
-						ImageTracer.imagedataToTracedata( ImageTracer.getImgdata(canvas), options )
-					);
-				},
-				options
+		const canvas = await ImageTracer.loadImage(
+			url,
+			options
 		);
-	},// End of imageToTracedata()
-	
-	// Tracing imagedata, then returning tracedata (layers with paths, palette, image size)
-	imagedataToTracedata: function( imgd, options, progressFunction ){
-		options = ImageTracer.checkoptions(options);
-		
-		// 1. Color quantization
-		var ii = ImageTracer.colorquantization( imgd, options );
-		
-		if(options.layering === 0){// Sequential layering
-			
-			// create tracedata object
-			var tracedata = {
-				layers : [],
-				palette : ii.palette,
-				width : ii.array[0].length-2,
-				height : ii.array.length-2
-			};
-			
-			// Loop to trace each color layer
-			for(var colornum=0; colornum<ii.palette.length; colornum++){
-				// progressbar function
-				if (progressFunction) { progressFunction(colornum, ii.palette.length) }
+		const result = await ImageTracer.imagedataToTracedata( ImageTracer.getImgdata(canvas), options )
 
-				// layeringstep -> pathscan -> internodes -> batchtracepaths
-				var tracedlayer =
-					ImageTracer.batchtracepaths(
-							
-						ImageTracer.internodes(
-								
-							ImageTracer.pathscan(
-								ImageTracer.layeringstep( ii, colornum ),
-								options.pathomit
-							),
-							
-							options
-							
-						),
-						
-						options.ltres,
-						options.qtres
-						
-					);
-				
-				// adding traced layer
-				tracedata.layers.push(tracedlayer);
-				
-			}// End of color loop
-			
-		}else{// Parallel layering
-			// 2. Layer separation and edge detection
-			var ls = ImageTracer.layering( ii );
-			
-			// Optional edge node visualization
-			if(options.layercontainerid){ ImageTracer.drawLayers( ls, ImageTracer.specpalette, options.scale, options.layercontainerid ); }
-			
-			// 3. Batch pathscan
-			var bps = ImageTracer.batchpathscan( ls, options.pathomit );
-			
-			// 4. Batch interpollation
-			var bis = ImageTracer.batchinternodes( bps, options );
-			
-			// 5. Batch tracing and creating tracedata object
-			var tracedata = {
-				layers : ImageTracer.batchtracelayers( bis, options.ltres, options.qtres ),
-				palette : ii.palette,
-				width : imgd.width,
-				height : imgd.height
-			};
-			
-		}// End of parallel layering
-		
-		// return tracedata
-		return tracedata;
-		
+		callback(result);
+	},// End of imageToTracedata()
+
+	// Tracing imagedata, then returning tracedata (layers with paths, palette, image size)
+	imagedataToTracedata: ( imgd, options, progressFunction ) => {
+		return new Promise(async (resolve, reject) => {
+			options = ImageTracer.checkoptions(options);
+
+			// 1. Color quantization
+			var ii = ImageTracer.colorquantization( imgd, options );
+
+			if (options.layering === 0) {// Sequential layering
+
+				// create tracedata object
+				var tracedata = {
+					layers : [],
+					palette : ii.palette,
+					width : ii.array[0].length-2,
+					height : ii.array.length-2
+				};
+
+				function timeout(ms) {
+					return new Promise(resolve => setTimeout(resolve, ms));
+				}
+
+				const doChunk = async colornum => {
+					if (progressFunction) { progressFunction(colornum, ii.palette.length) }
+					await timeout(5);
+
+					console.log('a')
+					const layeringStep = ImageTracer.layeringstep( ii, colornum )
+					console.log('b')
+					const pathScan = ImageTracer.pathscan(
+						layeringStep,
+						options.pathomit
+					)
+					console.log('c')
+					const internNodes = ImageTracer.internodes(
+						pathScan,
+						options
+					)
+					console.log('d')
+					// layeringstep -> pathscan -> internodes -> batchtracepaths
+					var tracedlayer =
+						ImageTracer.batchtracepaths(
+							internNodes,
+							options.ltres,
+							options.qtres
+						);
+
+					// adding traced layer
+					tracedata.layers.push(tracedlayer);
+
+					if (colornum < ii.palette.length) {
+						// set Timeout for async iteration
+						await doChunk(colornum + 1);
+					}
+				}
+				await doChunk(0);
+			} else {// Parallel layering
+				// 2. Layer separation and edge detection
+				var ls = ImageTracer.layering( ii );
+
+				// Optional edge node visualization
+				if(options.layercontainerid){ ImageTracer.drawLayers( ls, ImageTracer.specpalette, options.scale, options.layercontainerid ); }
+
+				// 3. Batch pathscan
+				var bps = ImageTracer.batchpathscan( ls, options.pathomit );
+
+				// 4. Batch interpollation
+				var bis = ImageTracer.batchinternodes( bps, options );
+
+				// 5. Batch tracing and creating tracedata object
+				var tracedata = {
+					layers : ImageTracer.batchtracelayers( bis, options.ltres, options.qtres ),
+					palette : ii.palette,
+					width : imgd.width,
+					height : imgd.height
+				};
+			}// End of parallel layering
+			console.log('resolve')
+			// return tracedata
+			resolve(tracedata);
+		})
 	},// End of imagedataToTracedata()
-	
+
     optionpresets: {
 		'default': {
-			
 			// Tracing
 			corsenabled : false,
 			ltres : 1,
 			qtres : 1,
 			pathomit : 8,
 			rightangleenhance : true,
-			
+
 			// Color quantization
 			colorsampling : 2,
 			numberofcolors : 16,
 			mincolorratio : 0,
 			colorquantcycles : 3,
-			
+
 			// Layering method
 			layering : 0,
-			
+
 			// SVG rendering
 			strokewidth : 1,
 			linefilter : false,
@@ -1112,20 +1121,22 @@ const ImageTracer = {
 	},// End of blur()
 	
 	// Helper function: loading an image from a URL, then executing callback with canvas as argument
-	loadImage: function(url,callback,options){
-		var img = new Image();
-		if(options && options.corsenabled){ img.crossOrigin = 'Anonymous'; }
-		img.onload = function(){
-			var canvas = document.createElement('canvas');
-			canvas.width = img.width;
-			canvas.height = img.height;
-			var context = canvas.getContext('2d');
-			context.drawImage(img,0,0);
-			callback(canvas);
-		};
-		img.src = url;
+	loadImage: function(url ,options) {
+		return new Promise((resolve, reject) => {
+			var img = new Image();
+			if(options && options.corsenabled){ img.crossOrigin = 'Anonymous'; }
+			img.onload = function(){
+				var canvas = document.createElement('canvas');
+				canvas.width = img.width;
+				canvas.height = img.height;
+				var context = canvas.getContext('2d');
+				context.drawImage(img,0,0);
+				resolve(canvas);
+			};
+			img.src = url;
+		})
 	},
-	
+
 	// Helper function: getting ImageData from a canvas
 	getImgdata: function(canvas){
 		var context = canvas.getContext('2d');

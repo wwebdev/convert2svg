@@ -1,20 +1,18 @@
 
-import ImageTracer from './imagetracer2'
+import ImageTracer from './imagetracer'
 
 export const convertImage = ({ file, options, updateProgressBar }) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const objectURL = window.URL.createObjectURL(file)
-        // modified version of (added progress bar functionality)
-        // https://github.com/jankovicsandras/imagetracerjs
-        ImageTracer.imageToSVG(
+        const result = await ImageTracer.imageToSVG(
             objectURL,
-            svgstr => resolve(svgstr),
             {
                 ...options,
                 viewbox: true,
             },
             updateProgressBar,
         )
+        resolve(result)
     })
 }
 

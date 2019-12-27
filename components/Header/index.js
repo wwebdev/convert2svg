@@ -3,7 +3,9 @@ import * as S from './styled'
 
 const Header = props => (
     <S.Container>
-        Convert2Svg
+        <a href="/">
+            Convert2Svg
+        </a>
     </S.Container>
 )
 

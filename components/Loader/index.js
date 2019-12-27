@@ -3,9 +3,9 @@ import * as S from './styled'
 
 const Loader = ({ progress }) => {
     const [showInfo, setShowInfo] = useState(false)
-    /* setTimeout(() => {
+    setTimeout(() => {
         setShowInfo(true)
-    }, 4000); */
+    }, 4000);
     console.log(progress)
 
     return (
@@ -17,7 +17,8 @@ const Loader = ({ progress }) => {
             { progress }
 
             <S.Info isVisible={showInfo}>
-                Depending on your image size, this can take up to some minutes...
+                Depending on your image size, this can take up to some minutes... <br />
+                Beware, that large svgs can slow down your browser
             </S.Info>
         </S.Container>
     )

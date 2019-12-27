@@ -23,7 +23,7 @@ const Home = () => {
   const [progress, setProgress] = useState(0)
 
   const updateProgressBar = (newProgress, all) => {
-    const progressPercent = Math.round(((newProgress + 1) / all) * 100)
+    const progressPercent = Math.round(((newProgress) / all) * 100)
     setProgress(progressPercent)
   }
 
@@ -63,7 +63,7 @@ const Home = () => {
 
       <Header />
 
-      { progress }
+      { /* TODO show options here with example image */ }
 
       { !showResult &&
         <S.CenterContent>
@@ -72,6 +72,7 @@ const Home = () => {
         </S.CenterContent>
       }
 
+      { /* TODO remove sidebar, just show image -> svg */ }
       { showResult &&
         <S.SidebarContent>
           { imageSrc && <Sidebar
