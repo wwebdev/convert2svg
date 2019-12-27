@@ -1,4 +1,7 @@
-export const convertImage = ({ file, options }) => {
+
+import ImageTracer from './imagetracer2'
+
+export const convertImage = ({ file, options, updateProgressBar }) => {
     return new Promise((resolve, reject) => {
         const objectURL = window.URL.createObjectURL(file)
         // modified version of (added progress bar functionality)
@@ -10,7 +13,7 @@ export const convertImage = ({ file, options }) => {
                 ...options,
                 viewbox: true,
             },
-            (progress, all) => console.log(progress, all) // TODO progress bar
+            updateProgressBar,
         )
     })
 }

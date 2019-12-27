@@ -20,6 +20,12 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [options, setOptions] = useState(presets[defaultPreset])
+  const [progress, setProgress] = useState(0)
+
+  const updateProgressBar = (newProgress, all) => {
+    const progressPercent = Math.round(((newProgress + 1) / all) * 100)
+    setProgress(progressPercent)
+  }
 
   const setFileAndConvert = async file => {
     setIsLoading(true)
@@ -30,7 +36,7 @@ const Home = () => {
     const imageFile = await getImageSrc(file)
     setImageSrc(imageFile)
 
-    const svgString = await convertImage({ file, options })
+    const svgString = await convertImage({ file, options, updateProgressBar })
     setSvgPreview(svgString)
     setIsLoading(false)
   }
@@ -38,8 +44,9 @@ const Home = () => {
   const updateSvg = async () => {
     setIsUpdating(true)
     setSvgPreview(undefined)
+    setProgress(0)
 
-    const svgString = await convertImage({ file: imageFile, options })
+    const svgString = await convertImage({ file: imageFile, options, updateProgressBar })
     setSvgPreview(svgString)
     setIsUpdating(false)
   }
@@ -56,10 +63,12 @@ const Home = () => {
 
       <Header />
 
+      { progress }
+
       { !showResult &&
         <S.CenterContent>
           { !hideUpload && <Dropzone setImageSrc={setFileAndConvert} /> }
-          { isLoading && <Loader /> }
+          { isLoading && <Loader progress={progress} /> }
         </S.CenterContent>
       }
 
@@ -73,12 +82,10 @@ const Home = () => {
           /> }
           <S.CenterContent>
             { svgPreview && <Result svgPreview={svgPreview} /> }
-            { isUpdating && <Loader /> }
+            { isUpdating && <Loader progress={progress} /> }
           </S.CenterContent>
         </S.SidebarContent>
       }
-
-      <script src="/imagetracer_v1.2.5.js"></script>
     </S.Container>
   )
 }
