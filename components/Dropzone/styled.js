@@ -1,15 +1,15 @@
 import styled, { css } from 'styled-components'
 import { Button } from '@material-ui/core'
-import { gradient, greenBlue, grey } from '../../styles/constants'
+import { gradient, greenBlue, grey, lightGrey, maxWidth } from '../../styles/constants'
 
 export const Container = styled.div`
     background: #fff;
     position: relative;
     width: 90%;
-    max-width: 800px;
+    max-width: ${maxWidth};
     height: 300px;
     padding: 50px;
-    margin: 25px auto;
+    margin: 10px auto;
     display: flex;
     align-items: center;
     justify-content: center;

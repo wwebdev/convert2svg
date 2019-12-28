@@ -1,5 +1,5 @@
 export { default as Dropzone } from './Dropzone'
 export { default as Header } from './Header'
 export { default as Loader } from './Loader'
+export { default as Presets } from './Presets'
 export { default as Result } from './Result'
-export { default as Sidebar } from './Sidebar'

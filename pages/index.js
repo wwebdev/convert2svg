@@ -1,94 +1,101 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Head from 'next/head'
-import { SvgIcon } from '@material-ui/core'
 import "../styles/global.css"
 import {
   Dropzone,
   Header,
   Loader,
+  Presets,
   Result,
-  Sidebar,
 } from '../components'
 import { convertImage, getImageSrc } from '../helper/image'
-import { presets, defaultPreset } from '../helper/presets'
+import ImageTracer from '../helper/imagetracer'
 import * as S from '../styles/landing'
 
-const Home = () => {
-  const [imageSrc, setImageSrc] = useState(undefined)
-  const [imageFile, setImageFile] = useState(undefined)
-  const [svgPreview, setSvgPreview] = useState(undefined)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isUpdating, setIsUpdating] = useState(false)
-  const [options, setOptions] = useState(presets[defaultPreset])
-  const [progress, setProgress] = useState(0)
+class Home extends React.Component {
+  state = {
+    isLoading: false,
+    preset: 'default',
+    progress: 0,
+  }
 
-  const updateProgressBar = (newProgress, all) => {
+  updateProgressBar = (newProgress, all) => {
     const progressPercent = Math.round(((newProgress) / all) * 100)
-    setProgress(progressPercent)
+    this.setState({ progress: progressPercent })
   }
 
-  const setFileAndConvert = async file => {
-    setIsLoading(true)
-    setImageSrc(undefined)
-    setSvgPreview(undefined)
-    setImageFile(file)
+  setFileAndConvert = async file => {
+    const { preset } = this.state
+    const imageSource = await getImageSrc(file)
+    this.setState({
+      isLoading: true,
+      imageFile: file,
+      imageSource,
+    })
 
-    const imageFile = await getImageSrc(file)
-    setImageSrc(imageFile)
+    const options = {
+      ...ImageTracer.optionpresets[preset],
+      viewbox: true,
+    }
 
-    const svgString = await convertImage({ file, options, updateProgressBar })
-    setSvgPreview(svgString)
-    setIsLoading(false)
+    const svgString = await convertImage({
+      file,
+      options,
+      updateProgressBar: this.updateProgressBar,
+    })
+
+    this.setState({
+      svgPreview: svgString,
+      isLoading: false
+    })
   }
 
-  const updateSvg = async () => {
-    setIsUpdating(true)
-    setSvgPreview(undefined)
-    setProgress(0)
+  render() {
+    const {
+      imageSrc,
+      imageFile,
+      svgPreview,
+      isLoading,
+      preset,
+      progress
+    } = this.state
+    const hideUpload = isLoading || svgPreview || imageSrc
+    const showResult = !!svgPreview
 
-    const svgString = await convertImage({ file: imageFile, options, updateProgressBar })
-    setSvgPreview(svgString)
-    setIsUpdating(false)
-  }
+    return (
+      <S.Container>
+        <Head>
+          <title>Convert2Svg</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-  const hideUpload = isLoading || svgPreview || imageSrc
-  const showResult = !!svgPreview || isUpdating
+        <Header />
 
-  return (
-    <S.Container>
-      <Head>
-        <title>Convert2Svg</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+        { !showResult &&
+          <S.CenterContent>
+            { !hideUpload &&
+              <React.Fragment>
+                <h2>1) Select conversion option</h2>
+                <Presets
+                  selectedPreset={preset}
+                  setPreset={preset => { this.setState({ preset })}}
+                />
+                <h2>2) Upload file</h2>
+                <Dropzone setImageSrc={this.setFileAndConvert} />
+              </React.Fragment>
+            }
+            { isLoading && <Loader progress={progress} /> }
+          </S.CenterContent>
+        }
 
-      <Header />
-
-      { /* TODO show options here with example image */ }
-
-      { !showResult &&
-        <S.CenterContent>
-          { !hideUpload && <Dropzone setImageSrc={setFileAndConvert} /> }
-          { isLoading && <Loader progress={progress} /> }
-        </S.CenterContent>
-      }
-
-      { /* TODO remove sidebar, just show image -> svg */ }
-      { showResult &&
-        <S.SidebarContent>
-          { imageSrc && <Sidebar
-            imageSrc={imageSrc}
-            options={options}
-            setOptions={setOptions}
-            updateSvg={updateSvg}
-          /> }
+        { showResult &&
           <S.CenterContent>
             { svgPreview && <Result svgPreview={svgPreview} /> }
-            { isUpdating && <Loader progress={progress} /> }
           </S.CenterContent>
-        </S.SidebarContent>
-      }
-    </S.Container>
-  )
+        }
+      </S.Container>
+    )
+  }
 }
 
 export default Home

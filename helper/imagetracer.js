@@ -196,14 +196,13 @@ const ImageTracer = {
 			desc : false,
 			lcpr : 0,
 			qcpr : 0,
-			
+
 			// Blur
 			blurradius : 0,
 			blurdelta : 20
-			
 		},
-		'posterized1': { colorsampling:0, numberofcolors:2 },
-		'posterized2': { numberofcolors:4, blurradius:5 },
+		'posterized1': { numberofcolors:4, blurradius:5 },
+		'posterized2': { colorsampling:0, numberofcolors:2 },
 		'curvy': { ltres:0.01, linefilter:true, rightangleenhance:false },
 		'sharp': { qtres:0.01, linefilter:false },
 		'detailed': { pathomit:0, roundcoords:2, ltres:0.5, qtres:0.5, numberofcolors:64 },
@@ -220,7 +219,7 @@ const ImageTracer = {
 			mincolorratio: 0, colorquantcycles: 3, blurradius: 3, blurdelta: 20, strokewidth: 0, linefilter: false,
 			roundcoords: 1, pal: [ { r: 0, g: 0, b: 100, a: 255 }, { r: 255, g: 255, b: 255, a: 255 } ] }
 	},// End of optionpresets
-	
+
 	// creating options object, setting defaults for missing values
 	checkoptions: function(options){
 		options = options || {};

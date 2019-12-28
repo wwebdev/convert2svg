@@ -1,0 +1,17 @@
+export default {
+    'default': 'Default',
+    'detailed': 'Detailed',
+    'posterized1': 'Posterized 1',
+    'posterized2': 'Posterized 2',
+    'grayscale': 'Grayscale',
+    'curvy': 'Curvy',
+    'sharp': 'Sharp',
+    'smoothed': 'Smoothed',
+    'fixedpalette': 'Fixed Palette',
+    'randomsampling1': 'Random Sampling 1',
+    'randomsampling2': 'Random Sampling 2',
+    'artistic1': 'Artistic 1',
+    'artistic2': 'Artistic 2',
+    'artistic3': 'Artistic 3',
+    'artistic4': 'Artistic 4',
+}
