@@ -1,8 +1,9 @@
 import React from 'react'
-import Head from 'next/head'
 import "../styles/global.css"
 import {
   Dropzone,
+  Footer,
+  Head,
   Header,
   Loader,
   Presets,
@@ -72,11 +73,7 @@ class Home extends React.Component {
 
     return (
       <S.Container>
-        <Head>
-          <title>Convert2Svg</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
+        <Head />
         <Header />
 
         <S.CenterContent>
@@ -99,6 +96,8 @@ class Home extends React.Component {
             />
           }
         </S.CenterContent>
+
+        <Footer />
       </S.Container>
     )
   }

@@ -1,4 +1,6 @@
 export { default as Dropzone } from './Dropzone'
+export { default as Footer } from './Footer'
+export { default as Head } from './Head'
 export { default as Header } from './Header'
 export { default as Loader } from './Loader'
 export { default as Presets } from './Presets'
