@@ -1,12 +1,25 @@
 import React from 'react'
 import * as S from './styled'
 
-const Result = ({ svgPreview }) => (
-    <S.Container>
-        { // TODO check better option than dangerouslySetInnerHTML
-            svgPreview && <div dangerouslySetInnerHTML={{ __html: svgPreview }}></div>
-        }
-    </S.Container>
-)
+const Result = ({ svgPreview, resetResult }) => {
+    const downloadSvg = () => {
+        const element = document.createElement("a")
+        const file = new Blob([svgPreview], {type: 'image/svg+xml'})
+        element.href = URL.createObjectURL(file)
+        element.download = "myFile.svg" // TODO filename
+        document.body.appendChild(element) // Required for this to work in FireFox
+        element.click()
+    }
+
+    return (
+        <S.Container>
+            { svgPreview && <S.SvgPreview dangerouslySetInnerHTML={{ __html: svgPreview }}></S.SvgPreview> }
+            <S.Buttons variant="contained">
+                <S.AgainButton onClick={resetResult}>Convert another image</S.AgainButton>
+                <S.DownloadButton onClick={downloadSvg}>Download SVG</S.DownloadButton>
+            </S.Buttons>
+        </S.Container>
+    )
+}
 
 export default Result

@@ -1,17 +1,38 @@
 import styled from 'styled-components'
-import Paper from '@material-ui/core/Paper'
+import { PrimaryButton } from '../../styles/landing'
+import { lightGrey } from '../../styles/constants'
 
-export const Container = styled.div`
-    margin: 50px;
+export const Container = styled.div``
+export const SvgPreview = styled.div`
+    margin-bottom: 20px;
+
+    svg {
+        max-height: calc(100vh - 220px);
+    }
 `
-export const Content = styled(Paper)`
-    padding: 0;
-    width: 50%;
-    margin: 0 50px;
+export const Buttons = styled.div`
+    display: flex;
+    justify-content: space-between;
 
-    img, svg {
-        width: 100%;
-        height: 100%;
-        display: block;
+    @media only screen and (max-width: 600px) {
+        flex-direction: column-reverse;
+    }
+`
+export const DownloadButton = styled(PrimaryButton)`
+    width: 66%;
+    margin: 0 0 0 20px !important;
+
+    @media only screen and (max-width: 600px) {
+        margin: 0 20px 20px !important;
+        width: calc(100% - 40px);
+    }
+`
+export const AgainButton = styled(PrimaryButton)`
+    background: #fff !important;
+    border: 1px solid ${lightGrey} !important;
+
+    @media only screen and (max-width: 600px) {
+        margin: 0 20px 20px !important;
+        width: calc(100% - 40px);
     }
 `

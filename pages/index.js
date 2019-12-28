@@ -29,7 +29,6 @@ class Home extends React.Component {
     const imageSource = await getImageSrc(file)
     this.setState({
       isLoading: true,
-      imageFile: file,
       imageSource,
     })
 
@@ -50,10 +49,19 @@ class Home extends React.Component {
     })
   }
 
+  resetResult = () => {
+    this.setState({
+      imageSrc: undefined,
+      svgPreview: undefined,
+      isLoading: false,
+      preset: 'default',
+      progress: 0,
+    })
+  }
+
   render() {
     const {
       imageSrc,
-      imageFile,
       svgPreview,
       isLoading,
       preset,
@@ -71,28 +79,26 @@ class Home extends React.Component {
 
         <Header />
 
-        { !showResult &&
-          <S.CenterContent>
-            { !hideUpload &&
-              <React.Fragment>
-                <h2>1) Select conversion option</h2>
-                <Presets
-                  selectedPreset={preset}
-                  setPreset={preset => { this.setState({ preset })}}
-                />
-                <h2>2) Upload file</h2>
-                <Dropzone setImageSrc={this.setFileAndConvert} />
-              </React.Fragment>
-            }
-            { isLoading && <Loader progress={progress} /> }
-          </S.CenterContent>
-        }
-
-        { showResult &&
-          <S.CenterContent>
-            { svgPreview && <Result svgPreview={svgPreview} /> }
-          </S.CenterContent>
-        }
+        <S.CenterContent>
+          { !hideUpload &&
+            <React.Fragment>
+              <h2>1) Select conversion option</h2>
+              <Presets
+                selectedPreset={preset}
+                setPreset={preset => { this.setState({ preset })}}
+              />
+              <h2>2) Upload file</h2>
+              <Dropzone setImageSrc={this.setFileAndConvert} />
+            </React.Fragment>
+          }
+          { isLoading && <Loader progress={progress} /> }
+          { showResult &&
+            <Result
+              svgPreview={svgPreview}
+              resetResult={this.resetResult}
+            />
+          }
+        </S.CenterContent>
       </S.Container>
     )
   }

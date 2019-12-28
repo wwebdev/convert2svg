@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import { Button } from '@material-ui/core'
+import { greenBlue } from './constants'
 
 export const Container = styled.main`
     height: 100%;
@@ -22,4 +24,8 @@ export const SidebarContent = styled.div`
     display: flex;
     flex: 1;
     justify-content: space-between;
+`
+export const PrimaryButton = styled(Button)`
+    padding: 10px 30px !important;
+    background: ${greenBlue} !important;
 `

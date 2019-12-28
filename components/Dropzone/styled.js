@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
-import { Button } from '@material-ui/core'
-import { gradient, greenBlue, grey, lightGrey, maxWidth } from '../../styles/constants'
+import { gradient, greenBlue, grey, maxWidth } from '../../styles/constants'
+import { PrimaryButton } from '../../styles/landing'
 
 export const Container = styled.div`
     background: #fff;
@@ -36,7 +36,7 @@ export const Content = styled.div`
     justify-content: center;
     align-items: center;
 `
-export const UploadButton = styled(Button)`
+export const UploadButton = styled(PrimaryButton)`
     padding: 10px 30px !important;
     background: ${greenBlue} !important;
 `
