@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
-import { Paper, Button } from '@material-ui/core'
-import { gradient, greenBlue } from '../../styles/constants'
+import { Button } from '@material-ui/core'
+import { gradient, greenBlue, grey } from '../../styles/constants'
 
 export const Container = styled.div`
     background: #fff;
@@ -13,9 +13,9 @@ export const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 5px dashed gray;
+    border: 5px dashed ${grey};
     text-align: center;
-    color: gray;
+    color: ${grey};
     z-index: 20;
     transition: all .3s ease-out;
     box-shadow: 0 0 0 1px rgba(255,255,255,.05), inset 0 0 .25em 0 rgba(0,0,0,.25);

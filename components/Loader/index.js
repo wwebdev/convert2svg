@@ -6,7 +6,6 @@ const Loader = ({ progress }) => {
     setTimeout(() => {
         setShowInfo(true)
     }, 4000);
-    console.log(progress)
 
     return (
         <S.Container>
@@ -14,7 +13,10 @@ const Loader = ({ progress }) => {
                 Converting your image...
             </S.Headline>
 
-            { progress }
+            <S.ProgressBar>
+                <S.ProgressBackground progress={progress} />
+                { progress }
+            </S.ProgressBar>
 
             <S.Info isVisible={showInfo}>
                 Depending on your image size, this can take up to some minutes... <br />

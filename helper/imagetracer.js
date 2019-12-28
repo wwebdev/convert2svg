@@ -107,23 +107,25 @@ const ImageTracer = {
 					return new Promise(resolve => setTimeout(resolve, ms));
 				}
 
-				const doChunk = async colornum => {
-					if (progressFunction) { progressFunction(colornum, ii.palette.length) }
-					await timeout(5);
+				async function runProgressFunction(step) {
+					if (progressFunction) { progressFunction(step, (ii.palette.length * 4) + 3) }
+					await timeout(5); // pause to be able to update dom
+				}
 
-					console.log('a')
+				const doChunk = async colornum => {
+					await runProgressFunction(colornum * 4)
 					const layeringStep = ImageTracer.layeringstep( ii, colornum )
-					console.log('b')
+					await runProgressFunction((colornum * 4) + 1)
 					const pathScan = ImageTracer.pathscan(
 						layeringStep,
 						options.pathomit
 					)
-					console.log('c')
+					await runProgressFunction((colornum * 4) + 2)
 					const internNodes = ImageTracer.internodes(
 						pathScan,
 						options
 					)
-					console.log('d')
+					await runProgressFunction((colornum * 4) + 3)
 					// layeringstep -> pathscan -> internodes -> batchtracepaths
 					var tracedlayer =
 						ImageTracer.batchtracepaths(
@@ -162,7 +164,6 @@ const ImageTracer = {
 					height : imgd.height
 				};
 			}// End of parallel layering
-			console.log('resolve')
 			// return tracedata
 			resolve(tracedata);
 		})
