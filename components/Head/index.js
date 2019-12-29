@@ -21,11 +21,11 @@ const Test = props => {
             <meta name="twitter:title" content={title} />
             <meta name="twitter:description" content={description} />
             <meta name="twitter:creator" content="@VincentWill4" />
-            <meta name="twitter:image" content={`https://vincentwill.com${image}`} />
+            <meta name="twitter:image" content={`https://convert2svg.com${image}`} />
 
             <meta name="description" content={description} />
             <meta property="og:title" content={title} />
-            <meta property="og:image" content={`https://vincentwill.com${image}`} />
+            <meta property="og:image" content={`https://convert2svg.com${image}`} />
             <meta property="og:site_name" content="Vincent Will - Blog" />
             <meta property="og:description" content={description} />
             <meta property="og:url" content={link} />
