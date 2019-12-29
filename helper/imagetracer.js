@@ -971,7 +971,7 @@ const ImageTracer = {
 		
 		// SVG start
 		var svgstr = '<svg ' + (options.viewbox ? ('viewBox="0 0 '+w+' '+h+'" ') : ('width="'+w+'" height="'+h+'" ')) +
-			'version="1.1" xmlns="http://www.w3.org/2000/svg" desc="Created with imagetracer.js version '+ImageTracer.versionnumber+'" >';
+			'version="1.1" xmlns="http://www.w3.org/2000/svg" desc="Created on https://convert2svg.com/" >';
 
 		// Drawing: Layers and Paths loops
 		for(var lcnt=0; lcnt < tracedata.layers.length; lcnt++){
