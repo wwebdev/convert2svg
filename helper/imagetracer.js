@@ -68,7 +68,7 @@ const ImageTracer = {
 		// tracing imagedata
 		var td = await ImageTracer.imagedataToTracedata( imgd, options, progressFunction );
 		// returning SVG string
-		return ImageTracer.getsvgstring(td, options);
+		return ImageTracer.getsvgstring(td, options, progressFunction);
 	},// End of imagedataToSVG()
 
 	// Loading an image from a URL, tracing when loaded,
@@ -91,7 +91,7 @@ const ImageTracer = {
 			options = ImageTracer.checkoptions(options);
 
 			// 1. Color quantization
-			var ii = ImageTracer.colorquantization( imgd, options, progressFunction );
+			var ii = await ImageTracer.colorquantization( imgd, options, progressFunction );
 
 			if (options.layering === 0) {// Sequential layering
 
@@ -108,24 +108,26 @@ const ImageTracer = {
 				}
 
 				async function runProgressFunction(step) {
-					if (progressFunction) { progressFunction(step, (ii.palette.length * 4) + 3) }
+					// progress from 10% - 90%
+					const allCount = (ii.palette.length * 4) + 23
+					if (progressFunction) { progressFunction(step, allCount) }
 					await timeout(5); // pause to be able to update dom
 				}
 
 				const doChunk = async colornum => {
-					await runProgressFunction(colornum * 4)
+					await runProgressFunction((colornum * 4) + 10)
 					const layeringStep = ImageTracer.layeringstep( ii, colornum )
-					await runProgressFunction((colornum * 4) + 1)
+					await runProgressFunction((colornum * 4) + 11)
 					const pathScan = ImageTracer.pathscan(
 						layeringStep,
 						options.pathomit
 					)
-					await runProgressFunction((colornum * 4) + 2)
+					await runProgressFunction((colornum * 4) + 12)
 					const internNodes = ImageTracer.internodes(
 						pathScan,
 						options
 					)
-					await runProgressFunction((colornum * 4) + 3)
+					await runProgressFunction((colornum * 4) + 13)
 					// layeringstep -> pathscan -> internodes -> batchtracepaths
 					var tracedlayer =
 						ImageTracer.batchtracepaths(
@@ -246,7 +248,7 @@ const ImageTracer = {
 	
 	// 1. Color quantization
 	// Using a form of k-means clustering repeatead options.colorquantcycles times. http://en.wikipedia.org/wiki/Color_quantization
-	colorquantization: function( imgd, options, progressFunction ){
+	colorquantization: async function( imgd, options, progressFunction ){
 		var arr = [], idx=0, cd,cdl,ci, paletteacc = [], pixelnum = imgd.width * imgd.height, i, j, k, cnt, palette;
 		
 		// imgd.data must be RGBA, not just RGB
@@ -277,15 +279,24 @@ const ImageTracer = {
 		
 		// Selective Gaussian blur preprocessing
 		if( options.blurradius > 0 ){ imgd = ImageTracer.blur( imgd, options.blurradius, options.blurdelta ); }
-		
-		// Repeat clustering step options.colorquantcycles times
-		for( cnt=0; cnt < options.colorquantcycles; cnt++ ){
-			console.log(cnt) // TODO progress function
+
+		function timeout(ms) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+
+		async function runProgressFunction(step) {
+			// progress from 0% - 10%
+			const allCount = options.colorquantcycles
+			if (progressFunction) { progressFunction(step, allCount * 10) }
+			await timeout(5); // pause to be able to update dom
+		}
+
+		async function doChunk(cnt) {
+			await runProgressFunction(cnt)
 			// Average colors from the second iteration
 			if(cnt>0){
 				// averaging paletteacc for palette
 				for( k=0; k < palette.length; k++ ){
-					
 					// averaging
 					if( paletteacc[k].n > 0 ){
 						palette[k] = {  r: Math.floor( paletteacc[k].r / paletteacc[k].n ),
@@ -293,7 +304,6 @@ const ImageTracer = {
 										b: Math.floor( paletteacc[k].b / paletteacc[k].n ),
 										a:  Math.floor( paletteacc[k].a / paletteacc[k].n ) };
 					}
-					
 					// Randomizing a color, if there are too few pixels and there will be a new cycle
 					if( ( paletteacc[k].n/pixelnum < options.mincolorratio ) && ( cnt < options.colorquantcycles-1 ) ){
 						palette[k] = {  r: Math.floor(Math.random()*255),
@@ -301,10 +311,9 @@ const ImageTracer = {
 										b: Math.floor(Math.random()*255),
 										a: Math.floor(Math.random()*255) };
 					}
-					
 				}// End of palette loop
 			}// End of Average colors from the second iteration
-			
+
 			// Reseting palette accumulator for averaging
 			for( i=0; i < palette.length; i++ ){ paletteacc[i] = { r:0, g:0, b:0, a:0, n:0 }; }
 			
@@ -339,13 +348,19 @@ const ImageTracer = {
 					
 				}// End of i loop
 			}// End of j loop
-			
-		}// End of Repeat clustering step options.colorquantcycles times
-		
+
+			if (cnt < options.colorquantcycles) {
+				// set Timeout for async iteration
+				await doChunk(cnt + 1);
+			}
+		}
+
+		await doChunk(0)
+
 		return { array:arr, palette:palette };
-		
+
 	},// End of colorquantization()
-	
+
 	// Sampling a palette from imagedata
 	samplepalette: function( numberofcolors, imgd ){
 		var idx, palette=[];
@@ -963,29 +978,42 @@ const ImageTracer = {
 	},// End of svgpathstring()
 	
 	// Converting tracedata to an SVG string
-	getsvgstring: function( tracedata, options ){
-		
+	getsvgstring: async function( tracedata, options, progressFunction ){
 		options = ImageTracer.checkoptions(options);
-		
+
 		var w = tracedata.width * options.scale, h = tracedata.height * options.scale;
-		
+
 		// SVG start
 		var svgstr = '<svg ' + (options.viewbox ? ('viewBox="0 0 '+w+' '+h+'" ') : ('width="'+w+'" height="'+h+'" ')) +
 			'version="1.1" xmlns="http://www.w3.org/2000/svg" desc="Created on https://convert2svg.com/" >';
 
-		// Drawing: Layers and Paths loops
-		for(var lcnt=0; lcnt < tracedata.layers.length; lcnt++){
-			console.log('b', lcnt) // todo progress function
+		function timeout(ms) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+
+		async function runProgressFunction(step) {
+			// progress from 90% - 100%
+			const progressPercent = 90 + Math.round(((step) / tracedata.layers.length) * 10)
+			if (progressFunction) { progressFunction(progressPercent, 100) }
+			await timeout(5); // pause to be able to update dom
+		}
+
+		async function doChunk(lcnt) {
+			await runProgressFunction(lcnt)
 			for(var pcnt=0; pcnt < tracedata.layers[lcnt].length; pcnt++){
-				
 				// Adding SVG <path> string
 				if( !tracedata.layers[lcnt][pcnt].isholepath ){
 					svgstr += ImageTracer.svgpathstring( tracedata, lcnt, pcnt, options );
 				}
-					
 			}// End of paths loop
-		}// End of layers loop
-		
+
+			if (lcnt < tracedata.layers.length - 1) {
+				await doChunk(lcnt + 1)
+			}
+		}
+		// Drawing: Layers and Paths loops
+		await doChunk(0)
+
 		// SVG End
 		svgstr+='</svg>';
 		
