@@ -3,9 +3,9 @@ import Head from 'next/head'
 
 const Test = props => {
     const title = "Convert2Svg - A Simple Image To SVG Vector Converter"
-    const link = "https://convert2svg.com" // TODO
+    const link = "https://convert2svg.com"
     const description = "A free and open-source tool to easily transform any image or photo into a multi colored svg vector file"
-    const image = "TODO"
+    const image = "/preview.jpg"
 
     return (
         <Head>
