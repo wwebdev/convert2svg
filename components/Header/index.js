@@ -6,16 +6,11 @@ import * as S from './styled'
 const Header = props => (
     <S.Container>
         <S.WidthLimit>
-            <S.Link href="/">
-                Convert2Svg
-            </S.Link>
+            <S.Link href="/">Convert2Svg</S.Link>
 
             <S.Icons>
                 <a href="https://github.com/Vincenius/convert2svg" target="_blank" rel="noopener">
                     <GitHubIcon />
-                </a>
-                <a href="https://vincentwill.com/" target="_blank" rel="noopener">
-                    <LanguageIcon />
                 </a>
             </S.Icons>
         </S.WidthLimit>

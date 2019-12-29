@@ -1,12 +1,12 @@
 import React from 'react'
 import * as S from './styled'
 
-const Result = ({ svgPreview, resetResult }) => {
+const Result = ({ svgPreview, resetResult, fileName }) => {
     const downloadSvg = () => {
         const element = document.createElement("a")
         const file = new Blob([svgPreview], {type: 'image/svg+xml'})
         element.href = URL.createObjectURL(file)
-        element.download = "myFile.svg" // TODO filename
+        element.download = `${fileName}.svg`
         document.body.appendChild(element) // Required for this to work in FireFox
         element.click()
     }

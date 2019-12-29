@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Button } from '@material-ui/core'
-import { maxWidth, gradient } from '../../styles/constants'
+import { maxWidth, gradient, breakpoint } from '../../styles/constants'
 
 export const Container = styled.div`
     width: 90%;
@@ -12,6 +12,10 @@ export const ElementContainer = styled.div`
     width: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+
+    @media (max-width: ${breakpoint}) {
+        grid-template-columns: repeat(auto-fill, minmax(144px, 1fr));
+    }
 `
 
 export const Element = styled.div`
@@ -37,6 +41,10 @@ export const Element = styled.div`
         color: #fff;
         border-bottom-left-radius: 8px;
         font-size: 16px;
+
+        @media (max-width: ${breakpoint}) {
+            font-size: 14px;
+        }
     }
 
     img {
@@ -49,13 +57,3 @@ export const Element = styled.div`
 export const ShowMore = styled(Button)`
     margin: 10px !important;
 `
-
-/*
-        display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid ${grey};
-    color: ${grey};
-    padding: 20px;
-    text-align: center;
-*/

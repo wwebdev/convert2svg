@@ -18,6 +18,7 @@ class Home extends React.Component {
     isLoading: false,
     preset: 'default',
     progress: 0,
+    fileName: '',
   }
 
   updateProgressBar = (newProgress, all) => {
@@ -28,9 +29,12 @@ class Home extends React.Component {
   setFileAndConvert = async file => {
     const { preset } = this.state
     const imageSource = await getImageSrc(file)
+    const fileName = file.name.split('.').slice(0, -1).join('.')
+
     this.setState({
       isLoading: true,
       imageSource,
+      fileName,
     })
 
     const options = {
@@ -57,6 +61,7 @@ class Home extends React.Component {
       isLoading: false,
       preset: 'default',
       progress: 0,
+      fileName: '',
     })
   }
 
@@ -66,7 +71,8 @@ class Home extends React.Component {
       svgPreview,
       isLoading,
       preset,
-      progress
+      progress,
+      fileName
     } = this.state
     const hideUpload = isLoading || svgPreview || imageSrc
     const showResult = !!svgPreview
@@ -93,6 +99,7 @@ class Home extends React.Component {
             <Result
               svgPreview={svgPreview}
               resetResult={this.resetResult}
+              fileName={fileName}
             />
           }
         </S.CenterContent>
