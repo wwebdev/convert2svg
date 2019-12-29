@@ -91,7 +91,7 @@ const ImageTracer = {
 			options = ImageTracer.checkoptions(options);
 
 			// 1. Color quantization
-			var ii = ImageTracer.colorquantization( imgd, options );
+			var ii = ImageTracer.colorquantization( imgd, options, progressFunction );
 
 			if (options.layering === 0) {// Sequential layering
 
@@ -246,7 +246,7 @@ const ImageTracer = {
 	
 	// 1. Color quantization
 	// Using a form of k-means clustering repeatead options.colorquantcycles times. http://en.wikipedia.org/wiki/Color_quantization
-	colorquantization: function( imgd, options ){
+	colorquantization: function( imgd, options, progressFunction ){
 		var arr = [], idx=0, cd,cdl,ci, paletteacc = [], pixelnum = imgd.width * imgd.height, i, j, k, cnt, palette;
 		
 		// imgd.data must be RGBA, not just RGB
@@ -280,7 +280,7 @@ const ImageTracer = {
 		
 		// Repeat clustering step options.colorquantcycles times
 		for( cnt=0; cnt < options.colorquantcycles; cnt++ ){
-			
+			console.log(cnt) // TODO progress function
 			// Average colors from the second iteration
 			if(cnt>0){
 				// averaging paletteacc for palette
@@ -975,6 +975,7 @@ const ImageTracer = {
 
 		// Drawing: Layers and Paths loops
 		for(var lcnt=0; lcnt < tracedata.layers.length; lcnt++){
+			console.log('b', lcnt) // todo progress function
 			for(var pcnt=0; pcnt < tracedata.layers[lcnt].length; pcnt++){
 				
 				// Adding SVG <path> string
