@@ -42,7 +42,7 @@ const Test = props => (
             <p>Effective date: May 29, 2019</p>
             <p>
                 Vincent Will ('us', 'we', or 'our') operates the
-                https://vincentwill.com website (hereinafter referred to
+                https://convert2svg.com website (hereinafter referred to
                 as the 'Service').
             </p>
             <p>
@@ -62,7 +62,7 @@ const Test = props => (
                 otherwise defined in this Privacy Policy, the terms used
                 in this Privacy Policy have the same meanings as in our
                 Terms and Conditions, accessible from
-                https://vincentwill.com
+                https://convert2svg.com
             </p>
             <h2>Information Collection And Use</h2>
             <p>
