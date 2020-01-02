@@ -1,7 +1,7 @@
 import React from 'react'
 import * as S from './styled'
 
-const Test = props => {
+const Footer = props => {
     const d = new Date();
     const year = d.getFullYear();
     return (
@@ -18,4 +18,4 @@ const Test = props => {
     )
 }
 
-export default Test
+export default Footer
