@@ -10,7 +10,7 @@ const Footer = props => {
                 <span>
                     © {year} - <a href="https://vincentwill.com/" target="_blank" rel="noopener">Vincent Will</a>
                 </span>
-                <a href="/privacy" target="_blank" rel="noopener">
+                <a href="/privacy">
                     Privacy Policy
                 </a>
             </S.WidthLimit>
