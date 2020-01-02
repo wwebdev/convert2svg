@@ -39,7 +39,7 @@ const Test = props => (
             <br />
 
             <h2>Version for my legal safety</h2>
-            <p>Effective date: May 29, 2019</p>
+            <p>Effective date: December 29, 2019</p>
             <p>
                 Vincent Will ('us', 'we', or 'our') operates the
                 https://convert2svg.com website (hereinafter referred to
