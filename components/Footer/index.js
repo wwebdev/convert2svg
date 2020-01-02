@@ -10,7 +10,7 @@ const Test = props => {
                 <span>
                     © {year} - <a href="https://vincentwill.com/" target="_blank" rel="noopener">Vincent Will</a>
                 </span>
-                <a href="https://vincentwill.com/privacy" target="_blank" rel="noopener">
+                <a href="/privacy" target="_blank" rel="noopener">
                     Privacy Policy
                 </a>
             </S.WidthLimit>

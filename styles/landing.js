@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Button } from '@material-ui/core'
-import { greenBlue } from './constants'
+import { greenBlue, maxWidth } from './constants'
 
 export const Container = styled.main`
     height: 100%;
@@ -9,6 +9,11 @@ export const Container = styled.main`
     display: flex;
     flex-direction: column;
     visibility: visible;
+`
+export const Content = styled.div`
+    width: 90%;
+    max-width: ${maxWidth};
+    margin: 0 auto;
 `
 
 export const CenterContent = styled.div`

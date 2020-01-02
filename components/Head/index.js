@@ -1,7 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 
-const Test = props => {
+const MyHead = props => {
     const title = "Convert2Svg - A Simple Image To SVG Vector Converter"
     const link = "https://convert2svg.com"
     const description = "A free and open-source tool to easily transform any image or photo into a multi colored svg vector file"
@@ -29,11 +29,10 @@ const Test = props => {
             <meta property="og:site_name" content="Vincent Will - Blog" />
             <meta property="og:description" content={description} />
             <meta property="og:url" content={link} />
-            <meta property="og:type" content="article" />
             <script type="text/javascript" src="/analytics.js"></script>
             <script type="text/javascript" src="https://analytics.vincentwill.com/hokuspokusj"></script>
         </Head>
     )
 }
 
-export default Test
+export default MyHead
