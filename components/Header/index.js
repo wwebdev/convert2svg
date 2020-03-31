@@ -9,7 +9,7 @@ const Header = props => (
             <S.Link href="/">Convert2Svg</S.Link>
 
             <S.Icons>
-                <a href="https://github.com/Vincenius/convert2svg" target="_blank" rel="noopener">
+                <a href="https://github.com/wwebdev/convert2svg" target="_blank" rel="noopener">
                     <GitHubIcon />
                 </a>
             </S.Icons>
